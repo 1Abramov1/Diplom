@@ -4,8 +4,13 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from app.core.config import settings
 
-# Контекст для хэширования паролей
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Контекст для хэширования паролей с pbkdf2 (не требует дополнительных библиотек)
+pwd_context = CryptContext(
+    schemes=["pbkdf2_sha256"],
+    default="pbkdf2_sha256",
+    pbkdf2_sha256__default_rounds=30000,  # количество итераций
+    deprecated="auto"
+)
 
 
 # Функции для паролей

@@ -8,7 +8,13 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - sqlite_data:/app  # чтобы база сохранялась
+      - sqlite_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./shop.db
+      - SECRET_KEY=${SECRET_KEY}  # берется из .env
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+    env_file:
+      - .env  # можно загрузить весь .env файл
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:

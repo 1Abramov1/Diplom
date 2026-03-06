@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
-from app.api.v1.endpoints import auth, users, products
+from app.api.v1.endpoints import auth, users, products, orders
 
 
 app = FastAPI(
@@ -13,6 +13,7 @@ app = FastAPI(
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(products.router, prefix="/api/v1")
+app.include_router(orders.router, prefix="/api/v1")
 
 @app.get("/")
 async def root():

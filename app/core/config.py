@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    # Database - ТЕПЕРЬ SQLite!
+    # Database - SQLite!
     DATABASE_URL: str = "sqlite+aiosqlite:///./shop.db"
 
     # JWT
