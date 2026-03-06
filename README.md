@@ -160,6 +160,41 @@ diplom/
 ├── README.md              # Документация
 └── requirements.txt       # Зависимости
 
+## 🧪 Тестирование
+
+### Установка зависимостей для тестов
+```bash
+pip install pytest pytest-asyncio pytest-cov httpx
+
+### Запуск всех тестов
+pytest app/tests/ -v
+
+### Запуск конкретного тестового файла
+pytest app/tests/test_auth.py -v
+pytest app/tests/test_users.py -v
+pytest app/tests/test_products.py -v
+pytest app/tests/test_orders.py -v
+pytest app/tests/test_integration.py -v
+
+### Запуск с покрытием кода
+# Процент покрытия в терминале
+pytest --cov=app --cov-report=term
+
+# Подробный HTML-отчёт
+pytest --cov=app --cov-report=html
+# После выполнения открой htmlcov/index.html в браузере
+
+### Результаты тестирования
+- ✅ 25 тестов покрывают ключевую функциональность
+- 📊 Покрытие кода >84%
+- ⚡️ Асинхронные тесты с pytest-asyncio
+
+### Тестирование в Docker
+# Запуск тестов в контейнере
+docker-compose run --rm app pytest app/tests/ -v
+
+# Или с покрытием
+docker-compose run --rm app pytest app/tests/ --cov=app --cov-report=term
 
 ## 🐳 Docker
 
