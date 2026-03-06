@@ -1,9 +1,7 @@
-from app.core.event_loop import configure_event_loop
-
-configure_event_loop()  # <-- Вызываем ДО создания приложения
-
 from fastapi import FastAPI
 from app.core.config import settings
+from app.api.v1.endpoints import auth, users, products
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -11,11 +9,16 @@ app = FastAPI(
     version=settings.VERSION
 )
 
+# Подключаем роутеры
+app.include_router(auth.router, prefix="/api/v1")
+app.include_router(users.router, prefix="/api/v1")
+app.include_router(products.router, prefix="/api/v1")
+
 @app.get("/")
 async def root():
     return {
         "message": "Сервис покупок работает!",
-        "database": "PostgreSQL",
+        "database": "SQLite",
         "docs": "/docs"
     }
 

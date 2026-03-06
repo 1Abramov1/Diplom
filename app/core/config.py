@@ -1,9 +1,10 @@
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 
 class Settings(BaseSettings):
-    # Database - используем psycopg (бинарная версия, не требует компиляции)
-    DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@localhost:5432/diploma_shop"
+    # Database - ТЕПЕРЬ SQLite!
+    DATABASE_URL: str = "sqlite+aiosqlite:///./shop.db"
 
     # JWT
     SECRET_KEY: str = "your-secret-key-change-in-production"
