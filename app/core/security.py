@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+
 from app.core.config import settings
 
 # Контекст для хэширования паролей с pbkdf2 (не требует дополнительных библиотек)
@@ -9,7 +11,7 @@ pwd_context = CryptContext(
     schemes=["pbkdf2_sha256"],
     default="pbkdf2_sha256",
     pbkdf2_sha256__default_rounds=30000,  # количество итераций
-    deprecated="auto"
+    deprecated="auto",
 )
 
 
@@ -20,7 +22,18 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
-    """Хэширование пароля"""
+    """
+    Хэширует пароль с использованием bcrypt.
+
+    Args:
+        password (str): Пароль в открытом виде
+
+    Returns:
+        str: Хэшированный пароль
+
+    Raises:
+        ValueError: Если пароль слишком длинный
+    """
     return pwd_context.hash(password)
 
 

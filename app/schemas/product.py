@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
+
 
 class ProductBase(BaseModel):
     name: str
@@ -9,8 +11,10 @@ class ProductBase(BaseModel):
     quantity: int = 0
     is_available: bool = True
 
+
 class ProductCreate(ProductBase):
     pass
+
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -19,10 +23,10 @@ class ProductUpdate(BaseModel):
     quantity: Optional[int] = None
     is_available: Optional[bool] = None
 
+
 class Product(ProductBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

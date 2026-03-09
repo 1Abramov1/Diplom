@@ -20,13 +20,9 @@ class TestProducts:
             "description": "Описание товара",
             "price": 199.99,
             "quantity": 5,
-            "is_available": True
+            "is_available": True,
         }
-        response = await client.post(
-            "/api/v1/products/",
-            json=product_data,
-            headers=admin_headers
-        )
+        response = await client.post("/api/v1/products/", json=product_data, headers=admin_headers)
         assert response.status_code == 201
         data = response.json()
         assert data["name"] == "Новый товар"
@@ -36,16 +32,8 @@ class TestProducts:
 
     async def test_create_product_as_user(self, client: AsyncClient, auth_headers):
         """Создание товара обычным пользователем (должно быть запрещено)"""
-        product_data = {
-            "name": "Новый товар",
-            "price": 199.99,
-            "quantity": 5
-        }
-        response = await client.post(
-            "/api/v1/products/",
-            json=product_data,
-            headers=auth_headers
-        )
+        product_data = {"name": "Новый товар", "price": 199.99, "quantity": 5}
+        response = await client.post("/api/v1/products/", json=product_data, headers=auth_headers)
         assert response.status_code == 403
         assert "Недостаточно прав" in response.json()["detail"]
 
@@ -64,15 +52,11 @@ class TestProducts:
 
     async def test_update_product_as_admin(self, client: AsyncClient, admin_headers, test_product):
         """Обновление товара админом"""
-        update_data = {
-            "name": "Обновлённый товар",
-            "price": 299.99,
-            "quantity": 15
-        }
+        update_data = {"name": "Обновлённый товар", "price": 299.99, "quantity": 15}
         response = await client.put(
             f"/api/v1/products/{test_product.id}",
             json=update_data,
-            headers=admin_headers
+            headers=admin_headers,
         )
         assert response.status_code == 200
         data = response.json()
@@ -82,10 +66,7 @@ class TestProducts:
 
     async def test_delete_product_as_admin(self, client: AsyncClient, admin_headers, test_product):
         """Удаление товара админом"""
-        response = await client.delete(
-            f"/api/v1/products/{test_product.id}",
-            headers=admin_headers
-        )
+        response = await client.delete(f"/api/v1/products/{test_product.id}", headers=admin_headers)
         assert response.status_code == 204
 
         # Проверяем что товар удалён

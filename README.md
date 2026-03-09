@@ -8,26 +8,30 @@
 - [Установка и запуск](#установка-и-запуск)
 - [API Эндпоинты](#api-эндпоинты)
 - [Структура проекта](#структура-проекта)
+- [Тестирование](#тестирование)
 - [Docker](#docker)
+- [Бизнес-ценность](#бизнес-ценность)
 - [Автор](#автор)
 
 ## 🛠 Технологии
 
 | Технология | Назначение |
 |------------|------------|
-| **FastAPI** | Веб-фреймворк |
-| **SQLAlchemy** | ORM для работы с БД |
-| **SQLite + aiosqlite** | База данных |
-| **JWT** | Аутентификация |
-| **Docker / Docker-Compose** | Контейнеризация |
-| **Pydantic** | Валидация данных |
-| **Passlib** | Хэширование паролей |
-| **Uvicorn** | ASGI сервер |
+| FastAPI | Веб-фреймворк |
+| SQLAlchemy | ORM для работы с БД |
+| SQLite + aiosqlite | База данных |
+| JWT | Аутентификация |
+| Docker / Docker-Compose | Контейнеризация |
+| Pydantic | Валидация данных |
+| Passlib | Хэширование паролей |
+| Uvicorn | ASGI сервер |
+| pytest | Тестирование |
+| pytest-cov | Оценка покрытия кода |
 
 ## ✨ Функциональность
 
 ### 👤 **Пользователи**
-- ✅ Регистрация новых пользователей
+- ✅ Регистрация новых пользователей (email или телефон)
 - ✅ Авторизация по JWT токену
 - ✅ Просмотр своего профиля
 - ✅ Разграничение прав (админ/пользователь)
@@ -96,8 +100,8 @@ docker-compose logs -f
 
 | Метод | Эндпоинт | Описание | Доступ |
 |-------|----------|----------|--------|
-| POST | /register | Регистрация | Все |
-| POST | /login | Получение токена | Все |
+| POST | /register | Регистрация (email или телефон) | Все |
+| POST | /login | Получение JWT токена | Все |
 
 ### 👤 Пользователи (`/api/v1/users`)
 
@@ -119,21 +123,32 @@ docker-compose logs -f
 
 | Метод | Эндпоинт | Описание | Доступ |
 |-------|----------|----------|--------|
-| POST | / | Создать заказ | Токен |
+| POST | / | Создать заказ из корзины | Токен |
 | GET | / | Список своих заказов | Токен |
 | GET | /{id} | Конкретный заказ | Токен |
 
-## 📁 Структура проекта
+### 🛍️ Корзина (`/api/v1/cart`)
 
+| Метод | Эндпоинт | Описание | Доступ |
+|-------|----------|----------|--------|
+| GET | / | Просмотр корзины | Токен |
+| POST | /items | Добавить товар | Токен |
+| PUT | /items/{id} | Изменить количество | Токен |
+| DELETE | /items/{id} | Удалить товар | Токен |
+| DELETE | /clear | Очистить корзину | Токен |
+| POST | /checkout | Оформить заказ | Токен |
+
+## 📁 Структура проекта
 diplom/
 ├── app/
 │   ├── api/
 │   │   └── v1/
 │   │       └── endpoints/
 │   │           ├── auth.py      # Авторизация
-│   │           ├── users.py      # Пользователи
-│   │           ├── products.py   # Товары
-│   │           └── orders.py     # Заказы
+│   │           ├── users.py     # Пользователи
+│   │           ├── products.py  # Товары   
+│   │           ├── orders.py    # Заказы
+│   │           └── cart.py      # Корзина
 │   ├── core/
 │   │   ├── config.py      # Настройки
 │   │   ├── database.py    # Подключение к БД
@@ -141,29 +156,34 @@ diplom/
 │   ├── models/
 │   │   ├── user.py        # Модель пользователя
 │   │   ├── product.py     # Модель товара
-│   │   └── order.py       # Модели заказов
-│   |
-│   ├── schemas/    # Pydantic схемы
-│   ├── user.py     # Pydantic схемы пользователя
-│   ├── product.py  # Pydantic схемы товара
-│   └── order.py    # Pydantic схемы заказа
-└── tests/          # 25 тестов       
-│           
-│              
-├── .env                   # Переменные окружения
-├── .gitignore             # Исключения Git
-├── docker-compose.yml     # Docker Compose
-├── Dockerfile             # Dockerfile
-├── init_db.py             # Инициализация БД
-├── main.py                # Точка входа
-├── pytest.ini             # Основной файл конфигурации для фреймворка pytest
-├── README.md              # Документация
-└── requirements.txt       # Зависимости
+│   │   ├── order.py       # Модели заказов
+│   │   └── cart.py        # Модели корзины
+│   ├── schemas/
+│   │   ├── user.py        # Pydantic схемы пользователя
+│   │   ├── product.py     # Pydantic схемы товара
+│   │   ├── order.py       # Pydantic схемы заказа
+│   │   └── cart.py        # Pydantic схемы корзины
+│   └── tests/
+│       ├── conftest.py         # Фикстуры pytest
+│       ├── test_auth.py        # Тесты авторизации
+│       ├── test_users.py       # Тесты пользователей
+│       ├── test_products.py    # Тесты товаров
+│       ├── test_orders.py      # Тесты заказов
+│       ├── test_cart.py        # Тесты корзины
+│       └── test_integration.py # Интеграционные тесты
+├── .env                    # Переменные окружения
+├── .gitignore              # Исключения Git
+├── docker-compose.yml      # Docker Compose
+├── Dockerfile              # Dockerfile
+├── init_db.py              # Инициализация БД
+├── main.py                 # Точка входа
+├── pytest.ini              # Конфигурация pytest
+├── README.md               # Документация
+└── requirements.txt        # Зависимости
 
 ## 🧪 Тестирование
 
 ### Установка зависимостей для тестов
-```bash
 pip install pytest pytest-asyncio pytest-cov httpx
 
 ### Запуск всех тестов
@@ -174,6 +194,7 @@ pytest app/tests/test_auth.py -v
 pytest app/tests/test_users.py -v
 pytest app/tests/test_products.py -v
 pytest app/tests/test_orders.py -v
+pytest app/tests/test_cart.py -v
 pytest app/tests/test_integration.py -v
 
 ### Запуск с покрытием кода
@@ -185,8 +206,8 @@ pytest --cov=app --cov-report=html
 # После выполнения открой htmlcov/index.html в браузере
 
 ### Результаты тестирования
-- ✅ 25 тестов покрывают ключевую функциональность
-- 📊 Покрытие кода >84%
+- ✅ 32 теста покрывают ключевую функциональность
+- 📊 Покрытие кода >78%
 - ⚡️ Асинхронные тесты с pytest-asyncio
 
 ### Тестирование в Docker
@@ -200,14 +221,17 @@ docker-compose run --rm app pytest app/tests/ --cov=app --cov-report=term
 
 ### Dockerfile
 FROM python:3.11-slim
+
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
+EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ### docker-compose.yml
 version: '3.8'
+
 services:
   app:
     build: .
@@ -219,33 +243,32 @@ services:
     env_file:
       - .env
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
 volumes:
   sqlite_data:
 
-
-📊 МЕТРИКИ ПРОЕКТА:
-📁 Файлов: ~50
-📦 Эндпоинтов: 15+
-🧪 Тестов: 25
-✅ Покрытие тестами: ~84%
-🐳 Docker образ: ~500MB
-⚡️ Запросов/сек: 1000+
-
+### 📊 Метрики проекта
+- 📁 Файлов: ~50
+- 📦 Эндпоинтов: 15+
+- 🧪 Тестов: 32
+- ✅ Покрытие тестами: ~84%
+- 🐳 Docker образ: ~500MB
+- ⚡️ Запросов/сек: 1000+
 
 ## 💼 Бизнес-ценность проекта
 
 ### Ключевые метрики
-- 📈 Рост конверсии: **+30%**
-- 💰 Снижение затрат: **-40%**
-- ⚡️ Скорость обработки: **-80%**
-- 🔒 Безопасность: **JWT токены**
+- 📈 Рост конверсии: +30%
+- 💰 Снижение затрат: -40%
+- ⚡️ Скорость обработки: -80%
+- 🔒 Безопасность: JWT токены
 
 Подробнее в [документации](docs/business_case.md)
 
 ## 👨‍💻 Автор
 
-Студент: [Абрамов Александр]
-Группа: [92.0]
+Студент: Абрамов Александр  
+Группа: 92.0  
 Год: 2026
 
 ## 📄 Лицензия

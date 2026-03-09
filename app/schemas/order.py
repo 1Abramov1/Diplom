@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict
+
 from app.schemas.product import Product
 
 
@@ -8,8 +10,10 @@ class OrderItemBase(BaseModel):
     product_id: int
     quantity: int
 
+
 class OrderItemCreate(OrderItemBase):
     pass
+
 
 class OrderItem(OrderItemBase):
     id: int
@@ -17,14 +21,16 @@ class OrderItem(OrderItemBase):
     price: float
     product: Optional[Product] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
 
 class OrderBase(BaseModel):
     status: str = "pending"
 
+
 class OrderCreate(BaseModel):
     items: List[OrderItemCreate]
+
 
 class Order(OrderBase):
     id: int
@@ -34,8 +40,7 @@ class Order(OrderBase):
     updated_at: Optional[datetime] = None
     items: List[OrderItem] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
     def __init__(self, **data):
         super().__init__(**data)

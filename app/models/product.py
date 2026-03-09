@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, Text, DateTime
+from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String, Text
 from sqlalchemy.sql import func
+
 from app.core.database import Base
 
+
 class Product(Base):
-    __tablename__ = "products" # В базе данных таблица называется "products"
+    __tablename__ = "products"  # В базе данных таблица называется "products"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
