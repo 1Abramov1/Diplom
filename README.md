@@ -181,7 +181,7 @@ diplom/
 ├── README.md               # Документация
 └── requirements.txt        # Зависимости
 
-## 🧪 Тестирование
+## 🧪 Тестирование !!!
 
 ### Установка зависимостей для тестов
 pip install pytest pytest-asyncio pytest-cov httpx
