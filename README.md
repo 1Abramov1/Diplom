@@ -210,12 +210,6 @@ pytest --cov=app --cov-report=html
 - 📊 Покрытие кода  = 78%
 - ⚡️ Асинхронные тесты с pytest-asyncio
 
-### Тестирование в Docker
-# Запуск тестов в контейнере
-docker-compose run --rm app pytest app/tests/ -v
-
-# Или с покрытием
-docker-compose run --rm app pytest app/tests/ --cov=app --cov-report=term
 
 ## 🐳 Docker
 
